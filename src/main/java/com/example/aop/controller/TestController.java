@@ -1,16 +1,26 @@
 package com.example.aop.controller;
 
+import com.example.aop.dto.TestDto;
+import com.example.aop.service.TestService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@RequestMapping("/")
 @RestController
+@RequiredArgsConstructor
 public class TestController {
+
+    private final TestService testService;
 
     @GetMapping("/test")
     public String test() {
+        testService.test("55555");
         log.info("controller");
+        testService.test();
+        log.info("controller 111");
+        testService.test("1111", 11L, TestDto.builder().test("11").build());
         return "test";
     }
 

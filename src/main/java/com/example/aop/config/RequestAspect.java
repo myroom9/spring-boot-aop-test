@@ -4,21 +4,23 @@ import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * request aspect class
- */
+
 @Slf4j
 @Aspect
 @Component
@@ -30,8 +32,28 @@ public class RequestAspect {
                 .collect(Collectors.joining(", "));
     }
 
-    @Around("within(com.example.aop.controller..*)")
-    public void logging(ProceedingJoinPoint pjp) {
+    @Before("within(com.example.aop.controller..*)")
+    public void methodParameterLogger(JoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+
+        log.info("args: {}", args);
+        log.info("method: {}", method);
+    }
+
+    @Before("within(com.example.aop.service..*)")
+    public void methodParameterLogger2(JoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+
+        log.info("args service: {}", args);
+        log.info("method service: {}", method);
+    }
+
+    @Around("within(com.example.aop..*)")
+    public Object logging(ProceedingJoinPoint pjp) throws Throwable {
         HttpServletRequest request = // 5
                 ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
@@ -47,9 +69,11 @@ public class RequestAspect {
                     params, request.getRemoteHost(), end - start);
         log.info("params: {}", params);
         log.info("path: {}", request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
+
+        return pjp.proceed();
     }
 
-    @AfterReturning(value = "within(com.example.aop.controller..*)", returning = "object")
+    @AfterReturning(value = "within(com.example.aop..*)", returning = "object")
     public void logging2(JoinPoint pjp, Object object) {
         log.info("object: {}", object);
     }
