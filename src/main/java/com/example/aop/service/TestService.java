@@ -1,12 +1,14 @@
 package com.example.aop.service;
 
 import com.example.aop.dto.TestDto;
+import com.example.aop.exception.BaseException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TestService {
     public String test(String test) {
-        return "11111";
+        throw new BaseException("message");
+        // return "11111";
     }
 
     public TestDto test(String test, long test1, TestDto t) {

@@ -1,5 +1,7 @@
 package com.example.aop.config;
 
+import com.example.aop.annotation.IpLog;
+import com.example.aop.exception.BaseException;
 import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -40,6 +42,8 @@ public class RequestAspect {
 
         log.info("args: {}", args);
         log.info("method: {}", method);
+
+        // throw new BaseException("test aop exception");
     }
 
     @Before("within(com.example.aop.service..*)")
@@ -50,6 +54,16 @@ public class RequestAspect {
 
         log.info("args service: {}", args);
         log.info("method service: {}", method);
+
+        throw new BaseException("test aop exception");
+    }
+
+    @Before("@annotation(ipLog)")
+    public void methodParameterLogger3(IpLog ipLog) {
+        HttpServletRequest request = // 5
+                ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+
+        log.info("userIp: {}", request.getRemoteAddr());
     }
 
     @Around("within(com.example.aop..*)")
@@ -66,7 +80,7 @@ public class RequestAspect {
         long start = System.currentTimeMillis();
         long end = System.currentTimeMillis();
         log.info("Request: {} {}{} < {} ({}ms)", request.getMethod(), request.getRequestURI(),
-                    params, request.getRemoteHost(), end - start);
+                params, request.getRemoteHost(), end - start);
         log.info("params: {}", params);
         log.info("path: {}", request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
 
@@ -75,6 +89,7 @@ public class RequestAspect {
 
     @AfterReturning(value = "within(com.example.aop..*)", returning = "object")
     public void logging2(JoinPoint pjp, Object object) {
+        log.info("pjp: {}",pjp.getSourceLocation().getWithinType());
         log.info("object: {}", object);
     }
 }
