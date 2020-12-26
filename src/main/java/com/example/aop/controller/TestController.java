@@ -44,7 +44,8 @@ public class TestController {
 
     @GetMapping("/")
     public String test1() {
-        log.info("test");
-        return "test";
+        return "redirect:/test1";
+        /*log.info("test");
+        return "test";*/
     }
 }

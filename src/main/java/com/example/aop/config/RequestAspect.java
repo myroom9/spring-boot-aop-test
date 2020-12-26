@@ -43,6 +43,10 @@ public class RequestAspect {
         log.info("args: {}", args);
         log.info("method: {}", method);
 
+        HttpServletRequest request = // 5
+                ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        log.info("request: {}", request.getScheme());
+
         // throw new BaseException("test aop exception");
     }
 
@@ -66,7 +70,7 @@ public class RequestAspect {
         log.info("userIp: {}", request.getRemoteAddr());
     }
 
-    @Around("within(com.example.aop..*)")
+    /*@Around("within(com.example.aop..*)")
     public Object logging(ProceedingJoinPoint pjp) throws Throwable {
         HttpServletRequest request = // 5
                 ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
@@ -85,7 +89,7 @@ public class RequestAspect {
         log.info("path: {}", request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
 
         return pjp.proceed();
-    }
+    }*/
 
     @AfterReturning(value = "within(com.example.aop..*)", returning = "object")
     public void logging2(JoinPoint pjp, Object object) {
