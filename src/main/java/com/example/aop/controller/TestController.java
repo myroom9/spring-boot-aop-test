@@ -18,14 +18,14 @@ public class TestController {
 
     @IpLog
     @GetMapping("/test")
-    public String test() {
-        //throw new BaseException("test");
-
+    public String test(@RequestParam("test") String test) {
+        testService.test(test);
+        /*log.info("controller111");
         testService.test("55555");
-        log.info("controller");
-        testService.test();
+        log.info("controller");*/
+        /*testService.test();
         log.info("controller 111");
-        testService.test("1111", 11L, TestDto.builder().test("11").build());
+        testService.test("1111", 11L, TestDto.builder().test("11").build());*/
 
         return "test";
     }

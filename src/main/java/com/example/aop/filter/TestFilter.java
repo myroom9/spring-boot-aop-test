@@ -12,7 +12,7 @@ import java.io.IOException;
 
 @Slf4j
 @Order(0)
-@Component
+// @Component
 public class TestFilter extends OncePerRequestFilter { // implements Filter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

@@ -34,7 +34,7 @@ public class RequestAspect {
                 .collect(Collectors.joining(", "));
     }
 
-    @Before("within(com.example.aop.controller..*)")
+    /*@Before("within(com.example.aop.controller..*)")
     public void methodParameterLogger(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -46,9 +46,7 @@ public class RequestAspect {
         HttpServletRequest request = // 5
                 ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         log.info("request: {}", request.getScheme());
-
-        // throw new BaseException("test aop exception");
-    }
+    }*/
 
     @Before("within(com.example.aop.service..*)")
     public void methodParameterLogger2(JoinPoint joinPoint) {
@@ -58,8 +56,6 @@ public class RequestAspect {
 
         log.info("args service: {}", args);
         log.info("method service: {}", method);
-
-        throw new BaseException("test aop exception");
     }
 
     @Before("@annotation(ipLog)")
@@ -70,7 +66,7 @@ public class RequestAspect {
         log.info("userIp: {}", request.getRemoteAddr());
     }
 
-    /*@Around("within(com.example.aop..*)")
+    @Around("within(com.example.aop.controller..*)")
     public Object logging(ProceedingJoinPoint pjp) throws Throwable {
         HttpServletRequest request = // 5
                 ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
@@ -88,10 +84,14 @@ public class RequestAspect {
         log.info("params: {}", params);
         log.info("path: {}", request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
 
-        return pjp.proceed();
-    }*/
+        Object proceed = pjp.proceed();
 
-    @AfterReturning(value = "within(com.example.aop..*)", returning = "object")
+        log.info("after proceeding");
+
+        return proceed;
+    }
+
+    @AfterReturning(value = "within(com.example.aop.service..*)", returning = "object")
     public void logging2(JoinPoint pjp, Object object) {
         log.info("pjp: {}",pjp.getSourceLocation().getWithinType());
         log.info("object: {}", object);

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class TestService {
     public String test(String test) {
-        throw new BaseException("message");
-        // return "11111";
+        // throw new BaseException("message");
+        return "11111";
     }
 
     public TestDto test(String test, long test1, TestDto t) {
